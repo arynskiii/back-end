@@ -1,0 +1,1 @@
+sudo docker exec -it postgres12 psql --username=root --dbname=simple_bank
