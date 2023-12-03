@@ -8,12 +8,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetAccountAPI(t *testing.T) {
@@ -33,7 +34,6 @@ func TestGetAccountAPI(t *testing.T) {
 			checkResponse: func(t *testing.T, recoder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recoder.Code)
 				requireBodyMatchAccount(t, recoder.Body, account)
-
 			},
 		},
 		{
@@ -58,7 +58,7 @@ func TestGetAccountAPI(t *testing.T) {
 
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server, err := NewServer(store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -90,7 +90,6 @@ func TestCreateAccountApi(t *testing.T) {
 			},
 			checkResponse: func(t *testing.T, recoder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recoder.Code)
-
 			},
 		},
 	}
