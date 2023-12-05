@@ -1,3 +1,6 @@
+//go:build somecondition
+// +build somecondition
+
 package main
 
 import (
