@@ -57,8 +57,7 @@ func TestGetAccountAPI(t *testing.T) {
 			store := mockdb.NewMockStore(ctrl)
 
 			tc.buildStubs(store)
-
-			server, err := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -97,9 +96,11 @@ func TestCreateAccountApi(t *testing.T) {
 		tc := testcase[i]
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
+
 			defer ctrl.Finish()
 			store := mockdb.NewMockStore(ctrl)
-			server := NewServer(store)
+			server := NewTestServer(t, store)
+
 			recorder := httptest.NewRecorder()
 			url := "/accounts"
 			request, err := http.NewRequest(http.MethodGet, url, nil)
