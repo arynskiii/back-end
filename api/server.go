@@ -5,7 +5,6 @@ import (
 	"back-end/token"
 	"back-end/util"
 	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
@@ -51,4 +50,5 @@ func (server *Server) setupRouter() {
 	authRoutes.POST("/transfers", server.createTransfer)
 
 	server.router = router
+	gin.SetMode(gin.ReleaseMode)
 }
