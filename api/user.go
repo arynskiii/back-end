@@ -4,6 +4,7 @@ import (
 	db "back-end/db/sqlc"
 	"back-end/util"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -54,6 +55,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 	hashedPassword, err := util.HashPassword(req.Password)
 	if err != nil {
+		fmt.Println(err)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -72,6 +74,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 				return
 			}
 		}
+		fmt.Println(123)
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -80,6 +83,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 }
 
 func (server *Server) loginUser(ctx *gin.Context) {
+
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

@@ -19,12 +19,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	authorizationHeaderKey  = "authorization"
-	authorizationTypeBearer = "bearer"
-	authorizationPayloadKey = "authorization_payload"
-)
-
 func TestGetAccountAPI(t *testing.T) {
 	account := randomAccount()
 	testCases := []struct {
@@ -138,18 +132,4 @@ func randomAccount() db.Account {
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
-}
-func addAuthorization(
-	t *testing.T,
-	request *http.Request,
-	tokenMaker token.Maker,
-	authorizationType string,
-	username string,
-	duration time.Duration,
-) {
-	token, err := tokenMaker.CreateToken(username, duration)
-	require.NoError(t, err)
-
-	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, token)
-	request.Header.Set(authorizationHeaderKey, authorizationHeader)
 }
