@@ -1,4 +1,4 @@
-DB_URL=postgresql://root:secret@172.17.0.3:5432/simple_bank?sslmode=disable
+DB_URL=postgresql://root:secret@172.17.0.2:5432/simple_bank?sslmode=disable
 
 postgres:
 	docker rm postgres12
