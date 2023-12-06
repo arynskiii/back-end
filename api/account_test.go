@@ -3,6 +3,7 @@ package api
 import (
 	mockdb "back-end/db/mock"
 	db "back-end/db/sqlc"
+	"back-end/token"
 	"back-end/util"
 	"bytes"
 	"database/sql"
@@ -12,6 +13,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
@@ -22,6 +24,7 @@ func TestGetAccountAPI(t *testing.T) {
 	testCases := []struct {
 		name          string
 		accountID     int64
+		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recoder *httptest.ResponseRecorder)
 	}{
@@ -30,6 +33,10 @@ func TestGetAccountAPI(t *testing.T) {
 			accountID: account.ID,
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Times(1).Return(account, nil)
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, "unauthorized_user", time.Minute)
+
 			},
 			checkResponse: func(t *testing.T, recoder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recoder.Code)
@@ -49,7 +56,6 @@ func TestGetAccountAPI(t *testing.T) {
 	}
 	for i := range testCases {
 		tc := testCases[i]
-
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -58,7 +64,7 @@ func TestGetAccountAPI(t *testing.T) {
 
 			tc.buildStubs(store)
 
-			server, err := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -99,7 +105,7 @@ func TestCreateAccountApi(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 			store := mockdb.NewMockStore(ctrl)
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 			url := "/accounts"
 			request, err := http.NewRequest(http.MethodGet, url, nil)
