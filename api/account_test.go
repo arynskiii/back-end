@@ -56,6 +56,7 @@ func TestGetAccountAPI(t *testing.T) {
 	}
 	for i := range testCases {
 		tc := testCases[i]
+		fmt.Println(tc.accountID)
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
