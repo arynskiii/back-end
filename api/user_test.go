@@ -67,7 +67,6 @@ func TestCreateUserAPI(t *testing.T) {
 			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
-			// Marshal body data to JSON
 			data, err := json.Marshal(tc.body)
 			require.NoError(t, err)
 			url := "/users"
@@ -76,7 +75,6 @@ func TestCreateUserAPI(t *testing.T) {
 			server.router.ServeHTTP(recorder, request)
 			tc.checkResponse(recorder)
 		})
-
 	}
 }
 
